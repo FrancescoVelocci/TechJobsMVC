@@ -11,9 +11,9 @@ namespace TechJobs.Controllers
 
         // This is a "static constructor" which can be used
         // to initialize static members of a class
-        static ListController() 
+        static ListController()
         {
-            
+
             columnChoices.Add("core competency", "Skill");
             columnChoices.Add("employer", "Employer");
             columnChoices.Add("location", "Location");
@@ -32,27 +32,50 @@ namespace TechJobs.Controllers
             if (column.Equals("all"))
             {
                 List<Dictionary<string, string>> jobs = JobData.FindAll();
-                ViewBag.title =  "All Jobs";
+                ViewBag.title = "All Jobs";
+                ViewBag.column = column;
                 ViewBag.jobs = jobs;
                 return View("Jobs");
             }
             else
             {
                 List<string> items = JobData.FindAll(column);
-                ViewBag.title =  "All " + columnChoices[column] + " Values";
+                ViewBag.title = "All " + columnChoices[column] + " Values";
                 ViewBag.column = column;
                 ViewBag.items = items;
-                return View();
+                //ViewBag.jobs = items;
+                return View("Values");
             }
         }
 
-        public IActionResult Jobs(string column, string value)
+        public IActionResult AllJobs(string value)
         {
-            List<Dictionary<String, String>> jobs = JobData.FindByColumnAndValue(column, value);
-            ViewBag.title = "Jobs with " + columnChoices[column] + ": " + value;
+            List<Dictionary<String, String>> jobs = JobData.FindByValue(value);
+
+            ViewBag.columns = ListController.columnChoices;
+            //ViewBag.title = "Search";
+
+            ViewBag.title = "Jobs with: " + value;
             ViewBag.jobs = jobs;
 
-            return View();
+            return View("Index");
+        }
+
+        public IActionResult Jobs(string column, string value, bool fromSearch = false)
+        {
+
+            List<Dictionary<String, String>> jobs = JobData.FindByColumnAndValue(column, value);
+            ViewBag.columns = ListController.columnChoices;
+            ViewBag.title = "Jobs with " + columnChoices[column] + ": " + value;
+            ViewBag.jobs = jobs;
+            if (fromSearch == true)
+            {
+                return View("Index");
+            }
+            else
+            {
+                return View();
+            }
         }
     }
 }

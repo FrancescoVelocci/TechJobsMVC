@@ -87,6 +87,7 @@ namespace TechJobs.Models
 
             List<Dictionary<string, string>> jobs = new List<Dictionary<string, string>>();
 
+
             foreach (Dictionary<string, string> row in AllJobs)
             {
                 string aValue = row[column];
